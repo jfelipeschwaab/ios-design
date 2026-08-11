@@ -92,6 +92,23 @@
     touch-action: manipulation;
   }
 
+  /*
+   * O Preflight do Tailwind v4 deixou de aplicar `cursor: pointer` em <button>
+   * (a v3 aplicava), então os botões voltam ao padrão do navegador, que é a seta.
+   * Reintroduzimos aqui — menos o estado desabilitado, que continua `not-allowed`.
+   */
+  button:not(:disabled),
+  summary,
+  [role='button']:not([aria-disabled='true']),
+  label:has(> input[type='checkbox']:not(:disabled)),
+  label:has(> input[type='radio']:not(:disabled)) {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
   dialog::backdrop {
     /* Glassmorphism dos "Reward Modals" do DESIGN.md. */
     background: rgba(54, 39, 93, 0.34);

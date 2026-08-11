@@ -98,7 +98,10 @@ export default function Quiz({ worlds, best, onFinish, onOpenWorld, onBack }: Pr
                   return (
                     <label
                       key={oi}
-                      className={`flex min-h-12 cursor-pointer items-start gap-2.5 rounded-xl p-3 text-[13.5px] leading-snug transition ${
+                      /* Sem classe de cursor: a regra base em index.css já dá
+                         pointer enquanto o radio está ativo e volta ao padrão
+                         quando o fieldset é desabilitado após a correção. */
+                      className={`flex min-h-12 items-start gap-2.5 rounded-xl p-3 text-[13.5px] leading-snug transition ${
                         showRight
                           ? 'bg-tertiary-container text-on-tertiary-container'
                           : showWrong
@@ -106,7 +109,7 @@ export default function Quiz({ worlds, best, onFinish, onOpenWorld, onBack }: Pr
                             : isPicked
                               ? 'bg-primary-container text-on-primary-container'
                               : 'bg-low hover:bg-container'
-                      } ${submitted ? 'cursor-default' : ''}`}
+                      }`}
                     >
                       <input
                         type="radio"

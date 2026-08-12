@@ -17,6 +17,7 @@ import JourneyRail, { daysUntilExam } from './components/JourneyRail'
 import WorldView from './components/WorldView'
 import StepDrawer from './components/StepDrawer'
 import Quiz from './components/Quiz'
+import Focus from './components/Focus'
 import ProgressBar from './components/ProgressBar'
 import { paletteFor } from './palettes'
 import {
@@ -27,11 +28,12 @@ import {
   Lock,
   Map,
   Star,
+  Timer,
   TrendingUp,
   worldIcon,
 } from './components/icons'
 
-type View = 'map' | 'world' | 'quiz'
+type View = 'map' | 'world' | 'quiz' | 'foco'
 
 const PRAISE = ['Boa! Mais um passo.', 'Isso aí.', 'Seguindo firme.', 'Mais um na conta.', 'Vai bem.']
 
@@ -41,9 +43,12 @@ export default function App() {
     overrides,
     lastCompletedId,
     quizBest,
+    focus,
     toggleSubstep,
     unlockWorld,
     recordQuiz,
+    setFocusGoal,
+    logFocus,
     reset,
   } = useProgress()
 
@@ -141,6 +146,7 @@ export default function App() {
           overrides={overrides}
           onGoMap={() => go('map')}
           onGoQuiz={() => go('quiz')}
+          onGoFocus={() => go('foco')}
           onOpenWorld={openWorld}
           onReset={reset}
         />
@@ -198,6 +204,10 @@ export default function App() {
               />
             )}
 
+            {view === 'foco' && (
+              <Focus focus={focus} onSetGoal={setFocusGoal} onLog={logFocus} />
+            )}
+
             {view === 'quiz' && (
               <Quiz
                 worlds={worlds}
@@ -211,7 +221,12 @@ export default function App() {
         </div>
       </div>
 
-      <BottomDock view={view} onGoMap={() => go('map')} onGoQuiz={() => go('quiz')} />
+      <BottomDock
+        view={view}
+        onGoMap={() => go('map')}
+        onGoQuiz={() => go('quiz')}
+        onGoFocus={() => go('foco')}
+      />
 
       <StepDrawer
         step={openStep}
@@ -337,6 +352,7 @@ function Sidebar({
   overrides,
   onGoMap,
   onGoQuiz,
+  onGoFocus,
   onOpenWorld,
   onReset,
 }: {
@@ -347,6 +363,7 @@ function Sidebar({
   overrides: Completed
   onGoMap: () => void
   onGoQuiz: () => void
+  onGoFocus: () => void
   onOpenWorld: (id: string) => void
   onReset: () => void
 }) {
@@ -378,6 +395,7 @@ function Sidebar({
 
       <nav className="mt-4 flex flex-col gap-1" aria-label="Navegação principal">
         <NavItem icon={<Map className="size-5" strokeWidth={1.9} />} label="Mapa" active={view === 'map'} onClick={onGoMap} />
+        <NavItem icon={<Timer className="size-5" strokeWidth={1.9} />} label="Foco" active={view === 'foco'} onClick={onGoFocus} />
         <NavItem icon={<ClipboardList className="size-5" strokeWidth={1.9} />} label="Simulado" active={view === 'quiz'} onClick={onGoQuiz} />
       </nav>
 
@@ -484,10 +502,12 @@ function BottomDock({
   view,
   onGoMap,
   onGoQuiz,
+  onGoFocus,
 }: {
   view: View
   onGoMap: () => void
   onGoQuiz: () => void
+  onGoFocus: () => void
 }) {
   const item = (active: boolean) =>
     `flex min-h-13 flex-1 flex-col items-center justify-center gap-1 rounded-xl font-label text-[12px] font-bold transition ${
@@ -508,6 +528,15 @@ function BottomDock({
         >
           <Map className="size-5" strokeWidth={1.9} />
           Mapa
+        </button>
+        <button
+          type="button"
+          onClick={onGoFocus}
+          aria-current={view === 'foco' ? 'page' : undefined}
+          className={item(view === 'foco')}
+        >
+          <Timer className="size-5" strokeWidth={1.9} />
+          Foco
         </button>
         <button
           type="button"

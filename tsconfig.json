@@ -14,5 +14,7 @@
     "verbatimModuleSyntax": true,
     "types": ["vite/client"]
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "vite.config.ts"],
+  /* Script de conferência avulso: roda no Node, não entra no bundle nem no tsc do app. */
+  "exclude": ["src/**/*.test.ts"]
 }
